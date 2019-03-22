@@ -1,3 +1,4 @@
+import java.util.Arrays;
 public class MyDeque<E>{
   private E[] data;
   private int size, start, end;
@@ -29,8 +30,57 @@ public class MyDeque<E>{
     }
     return toReturn;
   }
-  public void addFirst(E element){ }
-  public void addLast(E element){ }
+  //add to front, so push everything back one.
+  public void addFirst(E element){
+    if (element == null){
+      throw new NullPointerException("no null values allowed");
+    }
+    if (start > 0 && (end < (start-1) || end > start)){ // if there is space in front of start
+      data[start - 1] = element;
+      start--; //cuz you're adding to front, move start closer to the front
+      size++;
+    }else if (start<end && end < (data.length - 1)){ //if they're in the right order and end doesn't occupy entire array
+      data[data.length - 1] = element;
+      start = data.length - 1; //move start to the back
+      size++;
+    }else if (size == data.length){ //at capacity
+      resize(0); //make more spaces, and also indicate to keep first position free so u can add there
+      data[0] = element; //don't have to modify start, start was and now still is poitning to 0
+      size++;
+    }
+  }
+  private void resize(){ //just makes data 2 times as big + 1
+    data = Arrays.copyOf(data, (data.length * 2 + 1));
+  }
+  private void resize(int keepEmpty){ //should modify data to be resized but still contain space for thing to be added
+    data1 = (E[])new Object[(data.length * 2 + 1)];
+    for (int i = 0; i<keepEmpty; i++){
+      data1[i] = data[i];
+    }
+    for (int k = (keepEmpty+1); k<(data.length); k++){
+      data1[k] = data[k];
+    }
+    data = data1;
+  }
+  public void addLast(E element){
+    if (element == null){
+      throw new NullPointerException("no null vals");
+    }
+    if (end < (data.length-1) && (start >= (end+1) || end > start)){//if there is room after end
+      data[end+1] = element;
+      end++;
+      size++;
+    }else if(end == (data.length - 1) && start != 0){ //so start shouldn't be at 0 and there's space to move in front of start
+      data[0] = element;
+      end = 0;
+      size++;
+    }else if (size == data.length){
+      int toAdd = data.length
+      resize(toAdd);
+      data[toAdd] = element;
+      size++;
+    }
+  }
   public E removeFirst(){ }
   public E removeLast(){ }
   public E getFirst(){ }
