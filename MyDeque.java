@@ -81,8 +81,50 @@ public class MyDeque<E>{
       size++;
     }
   }
-  public E removeFirst(){ }
-  public E removeLast(){ }
-  public E getFirst(){ }
-  public E getLast(){ }
+  public E removeFirst(){
+    int toReturn;
+    if (size == 0){
+      throw new NoSuchElementException("deque empty!");
+    }
+    toReturn = data[start];
+    if (start < (data.length-1)){ //if there is space to move start up 1
+      //toReturn = data[start];
+      data[start] = null;
+      start++;
+    }else if (start == data.length-1){ //return start back to 0
+      data[start] = null;
+      start = 0;
+    }
+    return toReturn;
+  }
+  public E removeLast(){
+    if (size == 0){
+      throw new NoSuchElementException("deque empty!");
+    }
+    int toReturn;
+    if (size == 0){
+      throw new NoSuchElementException("deque empty!");
+    }
+    toReturn = data[end];
+    if (end > 0){
+      data[end] = null;
+      end--;
+    }else if (data == 0){
+      data[end] = null;
+      end = (data.length-1);
+    }
+    return toReturn;
+  }
+  public E getFirst(){
+    if (size == 0){
+      throw new NoSuchElementException("deque empty!");
+    }
+    return data[start];
+  }
+  public E getLast(){
+    if (size == 0){
+      throw new NoSuchElementException("deque empty!");
+    }
+    return data[end];
+  }
 }
