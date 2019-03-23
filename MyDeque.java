@@ -1,29 +1,47 @@
+import java.util.NoSuchElementException;
 import java.util.Arrays;
 public class MyDeque<E>{
   private E[] data;
-  private int size, start, end;
+  private int size = 0;
+  private  int start = -1;
+  private int end = -1;
   @SuppressWarnings("unchecked")
   public static void main(String[] args){
     MyDeque<Integer> test = new MyDeque();
     System.out.println("Current myDeque: " + test);
+    test.addFirst(2);
+    System.out.println("Current myDeque: " + test);
+    System.out.println("The array: " + Arrays.toString(test.data));
+    test.addFirst(3);
+    System.out.println("Current myDeque: " + test);
+    System.out.println("The array: " + Arrays.toString(test.data));
+    test.addFirst(4);
+    System.out.println("Current myDeque: " + test);
+    System.out.println("The array: " + Arrays.toString(test.data));
   }
   public MyDeque(){
     data = (E[])new Object[10];
-    size = 0;
+    //size = 0;
   }
   public MyDeque(int initialCapacity){
     data = (E[])new Object[initialCapacity];
-    size = 0;
+    //size = 0;
   }
   public int size(){
     return size;
   }
   public String toString(){
+    System.out.println("start: " + start);
+    System.out.println("end: " + end);
+    System.out.println("size: " + size);
     String toReturn = "{";
     if (size == 0){
       return "{ }";
     }
-    if (start < end){
+    if (start == end){
+      System.out.println("start == end");
+      toReturn += data[0];
+    }else if(start < end){
       for (int i = start; i<= end; i++){
         toReturn += (data[i] + " ");
       }
@@ -35,24 +53,36 @@ public class MyDeque<E>{
         toReturn += (data[k] + " ");
       }
     }
+    toReturn += "}";
     return toReturn;
   }
   //add to front, so push everything back one.
   public void addFirst(E element){
+    System.out.println("Adding " + element);
     if (element == null){
       throw new NullPointerException("no null values allowed");
     }
-    if (start > 0 && (end < (start-1) || end > start)){ // if there is space in front of start
-      data[start - 1] = element;
-      start--; //cuz you're adding to front, move start closer to the front
+    if (size == 0 && start == -1 && end == -1){
+      data[0] = element;
+      start = 0;
+      end = 0;
       size++;
-    }else if (start<end && end < (data.length - 1)){ //if they're in the right order and end doesn't occupy entire array
-      data[data.length - 1] = element;
-      start = data.length - 1; //move start to the back
+    } else if (start == end && size == 1){
+      start = data.length - 1;
+      data[start] = element;
       size++;
-    }else if (size == data.length){ //at capacity
-      resize(0); //make more spaces, and also indicate to keep first position free so u can add there
-      data[0] = element; //don't have to modify start, start was and now still is poitning to 0
+    } else if (start > (end + 1)){
+      start--;
+      data[start] = element;
+      size++;
+    } else if (start > 0 && start < end){
+      start--;
+      data[start] = element;
+      size++;
+    } else if (start == end + 1 || start == end - 1){
+      resize(0);
+      start = 0;
+      end = size;
       size++;
     }
   }
@@ -61,7 +91,7 @@ public class MyDeque<E>{
     E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
     if (start > end){
       for (int i = start; i<(data.length - 1); i++){
-        toAssign[k] = d[i];
+        toAssign[k] = data[i];
         k++;
       }
       for (int j = 0; j <= end; j++){
@@ -71,7 +101,7 @@ public class MyDeque<E>{
     }else{ //start where ti should be
       for (int l = start; l <= end; l++){
         toAssign[k] = data[l];
-        k++
+        k++;
       }
     }
     data = toAssign;
@@ -82,7 +112,7 @@ public class MyDeque<E>{
     if (start > end){
       for (int i = start; i<(data.length - 1); i++){
         if (i != keepEmpty){
-          toAssign[k] = d[i];
+          toAssign[k] = data[i];
         }
         k++;
       }
@@ -97,7 +127,7 @@ public class MyDeque<E>{
         if (l != keepEmpty){
           toAssign[k] = data[l];
         }
-        k++
+        k++;
       }
     }
     data = toAssign;
@@ -106,23 +136,29 @@ public class MyDeque<E>{
     if (element == null){
       throw new NullPointerException("no null vals");
     }
-    if (end < (data.length-1) && (start >= (end+1) || end > start)){//if there is room after end
+    if (size == 0){
+      data[0] = element;
+      start = 0;
+      end = 0;
+    }else if (end < (data.length-1) && (start >= (end) || end > start)){//if there is room after end
       data[end+1] = element;
-      end++;
+      if (size != 0){
+        end++;
+      }
       size++;
     }else if(end == (data.length - 1) && start != 0){ //so start shouldn't be at 0 and there's space to move in front of start
       data[0] = element;
       end = 0;
       size++;
     }else if (size == data.length){
-      int toAdd = data.length
+      int toAdd = data.length;
       resize(toAdd);
       data[toAdd] = element;
       size++;
     }
   }
   public E removeFirst(){
-    int toReturn;
+    E toReturn;
     if (size == 0){
       throw new NoSuchElementException("deque empty!");
     }
@@ -138,10 +174,7 @@ public class MyDeque<E>{
     return toReturn;
   }
   public E removeLast(){
-    if (size == 0){
-      throw new NoSuchElementException("deque empty!");
-    }
-    int toReturn;
+    E toReturn;
     if (size == 0){
       throw new NoSuchElementException("deque empty!");
     }
@@ -149,7 +182,7 @@ public class MyDeque<E>{
     if (end > 0){
       data[end] = null;
       end--;
-    }else if (data == 0){
+    }else if (end == 0){
       data[end] = null;
       end = (data.length-1);
     }
