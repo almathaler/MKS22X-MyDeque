@@ -3,6 +3,10 @@ public class MyDeque<E>{
   private E[] data;
   private int size, start, end;
   @SuppressWarnings("unchecked")
+  public static void main(String[] args){
+    MyDeque<Integer> test = new MyDeque();
+    System.out.println("Current myDeque: " + test);
+  }
   public MyDeque(){
     data = (E[])new Object[10];
     size = 0;
@@ -16,6 +20,9 @@ public class MyDeque<E>{
   }
   public String toString(){
     String toReturn = "{";
+    if (size == 0){
+      return "{ }";
+    }
     if (start < end){
       for (int i = start; i<= end; i++){
         toReturn += (data[i] + " ");
@@ -50,17 +57,50 @@ public class MyDeque<E>{
     }
   }
   private void resize(){ //just makes data 2 times as big + 1
-    data = Arrays.copyOf(data, (data.length * 2 + 1));
+    int k = 0;
+    E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
+    if (start > end){
+      for (int i = start; i<(data.length - 1); i++){
+        toAssign[k] = d[i];
+        k++;
+      }
+      for (int j = 0; j <= end; j++){
+        toAssign[k] = data[j];
+        k++;
+      }
+    }else{ //start where ti should be
+      for (int l = start; l <= end; l++){
+        toAssign[k] = data[l];
+        k++
+      }
+    }
+    data = toAssign;
   }
   private void resize(int keepEmpty){ //should modify data to be resized but still contain space for thing to be added
-    data1 = (E[])new Object[(data.length * 2 + 1)];
-    for (int i = 0; i<keepEmpty; i++){
-      data1[i] = data[i];
+    int k = 0;
+    E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
+    if (start > end){
+      for (int i = start; i<(data.length - 1); i++){
+        if (i != keepEmpty){
+          toAssign[k] = d[i];
+        }
+        k++;
+      }
+      for (int j = 0; j <= end; j++){
+        if (j != keepEmpty){
+          toAssign[k] = data[j];
+        }
+        k++;
+      }
+    }else{ //start where ti should be
+      for (int l = start; l <= end; l++){
+        if (l != keepEmpty){
+          toAssign[k] = data[l];
+        }
+        k++
+      }
     }
-    for (int k = (keepEmpty+1); k<(data.length); k++){
-      data1[k] = data[k];
-    }
-    data = data1;
+    data = toAssign;
   }
   public void addLast(E element){
     if (element == null){
