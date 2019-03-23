@@ -18,6 +18,10 @@ public class MyDeque<E>{
     test.addFirst(4);
     System.out.println("Current myDeque: " + test);
     System.out.println("The array: " + Arrays.toString(test.data));
+    test.addLast(5);
+    System.out.println("Current myDeque: " + test);
+    System.out.println("The array: " + Arrays.toString(test.data));
+
   }
   public MyDeque(){
     data = (E[])new Object[10];
@@ -136,24 +140,27 @@ public class MyDeque<E>{
     if (element == null){
       throw new NullPointerException("no null vals");
     }
-    if (size == 0){
+    if (size == 0 && start == -1 && end == -1){
       data[0] = element;
       start = 0;
       end = 0;
-    }else if (end < (data.length-1) && (start >= (end) || end > start)){//if there is room after end
-      data[end+1] = element;
-      if (size != 0){
-        end++;
-      }
       size++;
-    }else if(end == (data.length - 1) && start != 0){ //so start shouldn't be at 0 and there's space to move in front of start
-      data[0] = element;
-      end = 0;
+    }else if (start == end && size == 1){
+      end++;
+      data[end] = element;
       size++;
-    }else if (size == data.length){
+    }else if(end < (start - 1)){
+      end++;
+      data[end] = element;
+      size++;
+    }else if (end > start && end < (data.length-1)){
+      end++;
+      data[end] = element;
+      size++;
+    }else if (end == start + 1 || end == start - 1){ //resize
       int toAdd = data.length;
       resize(toAdd);
-      data[toAdd] = element;
+      end = toAdd; //toAdd should == size actually
       size++;
     }
   }
