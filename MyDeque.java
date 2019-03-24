@@ -1,5 +1,7 @@
 import java.util.NoSuchElementException;
 import java.util.Arrays;
+//work on resize and also removing
+//resize is faulty check terminal
 public class MyDeque<E>{
   private E[] data;
   private int size = 0;
@@ -8,7 +10,7 @@ public class MyDeque<E>{
   @SuppressWarnings("unchecked")
   public static void main(String[] args){
     MyDeque<Integer> test = new MyDeque();
-    for (int i = 0; i<10; i++){
+    for (int i = 0; i<15; i++){
       if (i%2 == 0){
         test.addFirst(i);
       }else{
@@ -62,26 +64,32 @@ public class MyDeque<E>{
       throw new NullPointerException("no null values allowed");
     }
     if (size == 0 && start == -1 && end == -1){
+      System.out.println("in first block");
       data[0] = element;
       start = 0;
       end = 0;
       size++;
-    } else if ((start == end && size == 1) || start == end + 1 || start == end - 1){
+    } else if ((start == end && size == 1) || ((start == end + 1 || start == end - 1) && size < data.length)){
+      System.out.println("in second block");
       start = data.length - 1;
       data[start] = element;
       size++;
     } else if (start > (end + 1)){
+      System.out.println("in third block");
       start--;
       data[start] = element;
       size++;
     } else if (start > 0 && start < end){
+      System.out.println("in fourth block");
       start--;
       data[start] = element;
       size++;
     } else if ((start == end + 1 || start == end - 1) && size == data.length){
+      System.out.println("in fifth block");
       System.out.println("resizing");
       resize(0); //problem here -- went to this even when there is space to move back.
       start = 0; //rework this if clause
+      data[start] = element;
       end = size;
       size++;
     }
@@ -106,27 +114,42 @@ public class MyDeque<E>{
     }
     data = toAssign;
   }
+  //REASSIGN FOR LOOP VARIABLES
   private void resize(int keepEmpty){ //should modify data to be resized but still contain space for thing to be added
     int k = 0; //this is the index of the data
     E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
+    System.out.println("\ntoAssign length: " + toAssign.length);
     if (start > end){
-      for (int i = start; i<(data.length - 1); i++){ //this is the index in the new data
+      int startAmount = (data.length - (1+start));
+      int endAmount = (start);
+      System.out.println("start is greater than end so: ");
+      for (int i = 0; i<startAmount; i++){ //this is the index in the new data
         if (i != keepEmpty){
           toAssign[i] = data[k];
           k++;
+          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + i + " of toAssign");
+        }else{
+          System.out.println("didn't copy over because " + i + " equals keepEmpty (" + keepEmpty + ")");
         }
       }
-      for (int j = 0; j <= end; j++){
+      for (int j = startAmount; j <= (startAmount+endAmount); j++){
         if (j != keepEmpty){
           toAssign[j] = data[k];
           k++;
+          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + j + " of toAssign");
+        }else{
+          System.out.println("didn't copy over because " + j + " equals keepEmpty (" + keepEmpty + ")");
         }
       }
     }else{ //start where ti should be
+      System.out.println("start is less than end so");
       for (int l = start; l <= end; l++){
         if (l != keepEmpty){
           toAssign[l] = data[k];
           k++;
+          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + l + " of toAssign");
+        }else{
+          System.out.println("didn't copy over because " + l + " equals keepEmpty (" + keepEmpty + ")");
         }
       }
     }
@@ -138,27 +161,33 @@ public class MyDeque<E>{
       throw new NullPointerException("no null vals");
     }
     if (size == 0 && start == -1 && end == -1){
+      System.out.println("in first block");
       data[0] = element;
       start = 0;
       end = 0;
       size++;
     }else if ((start == end && size == 1) || end == start + 1 || end == start - 1){
+      System.out.println("in second block");
       end++;
       data[end] = element;
       size++;
     }else if(end < (start - 1)){
+      System.out.println("in third block");
       end++;
       data[end] = element;
       size++;
     }else if (end > start && end < (data.length-1)){
+      System.out.println("in fourth block");
       end++;
       data[end] = element;
       size++;
     }else if ((end == start + 1 || end == start - 1) && size == data.length){ //resize
+      System.out.println("in fifth block");
       int toAdd = data.length;
       System.out.println("resizing");
       resize(toAdd);
       end = toAdd; //toAdd should == size actually
+      data[end] = element;
       size++;
     }
   }
