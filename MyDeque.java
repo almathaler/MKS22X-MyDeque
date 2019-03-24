@@ -69,7 +69,8 @@ public class MyDeque<E>{
       start = 0;
       end = 0;
       size++;
-    } else if ((start == end && size == 1) || ((start == end + 1 || start == end - 1) && size < data.length)){
+      //(start == end && size == 1) || ((start == end + 1 || start == end - 1 || for below
+    } else if (start == 0 && size < data.length){
       System.out.println("in second block");
       start = data.length - 1;
       data[start] = element;
@@ -87,22 +88,21 @@ public class MyDeque<E>{
     } else if ((start == end + 1 || start == end - 1) && size == data.length){
       System.out.println("in fifth block");
       System.out.println("resizing");
-      resize(0); //problem here -- went to this even when there is space to move back.
-      start = 0; //rework this if clause
-      data[start] = element;
-      end = size;
-      size++;
+      resize(); //problem here -- went to this even when there is space to move back.
+      start = 0;
+      end = size-1;
+      addFirst(element);
     }
   }
   private void resize(){ //just makes data 2 times as big + 1
-    int k = 0;
+    int k = 0; //index of toAssign
     E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
     if (start > end){
-      for (int i = start; i<(data.length - 1); i++){
+      for (int i = start; i<(data.length); i++){
         toAssign[k] = data[i];
         k++;
       }
-      for (int j = 0; j <= end; j++){
+      for (int j = 0; j < start; j++){ //keep in mind that start == end-1
         toAssign[k] = data[j];
         k++;
       }
@@ -115,46 +115,6 @@ public class MyDeque<E>{
     data = toAssign;
   }
   //REASSIGN FOR LOOP VARIABLES
-  private void resize(int keepEmpty){ //should modify data to be resized but still contain space for thing to be added
-    int k = 0; //this is the index of the data
-    E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
-    System.out.println("\ntoAssign length: " + toAssign.length);
-    if (start > end){
-      int startAmount = (data.length - (1+start));
-      int endAmount = (start);
-      System.out.println("start is greater than end so: ");
-      for (int i = 0; i<startAmount; i++){ //this is the index in the new data
-        if (i != keepEmpty){
-          toAssign[i] = data[k];
-          k++;
-          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + i + " of toAssign");
-        }else{
-          System.out.println("didn't copy over because " + i + " equals keepEmpty (" + keepEmpty + ")");
-        }
-      }
-      for (int j = startAmount; j <= (startAmount+endAmount); j++){
-        if (j != keepEmpty){
-          toAssign[j] = data[k];
-          k++;
-          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + j + " of toAssign");
-        }else{
-          System.out.println("didn't copy over because " + j + " equals keepEmpty (" + keepEmpty + ")");
-        }
-      }
-    }else{ //start where ti should be
-      System.out.println("start is less than end so");
-      for (int l = start; l <= end; l++){
-        if (l != keepEmpty){
-          toAssign[l] = data[k];
-          k++;
-          System.out.println("at the " + k + "th index of the MyDeque, copying over into index " + l + " of toAssign");
-        }else{
-          System.out.println("didn't copy over because " + l + " equals keepEmpty (" + keepEmpty + ")");
-        }
-      }
-    }
-    data = toAssign;
-  }
   public void addLast(E element){
     System.out.println("Adding Last " + element);
     if (element == null){
@@ -183,12 +143,11 @@ public class MyDeque<E>{
       size++;
     }else if ((end == start + 1 || end == start - 1) && size == data.length){ //resize
       System.out.println("in fifth block");
-      int toAdd = data.length;
       System.out.println("resizing");
-      resize(toAdd);
-      end = toAdd; //toAdd should == size actually
-      data[end] = element;
-      size++;
+      resize();
+      start = 0;
+      end = size-1;
+      addLast(element);
     }
   }
   public E removeFirst(){
