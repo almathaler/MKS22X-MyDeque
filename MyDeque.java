@@ -78,7 +78,7 @@ public class MyDeque<E>{
       start--;
       data[start] = element;
       size++;
-    } else if (start == end + 1 || start == end - 1 && size == data.length){
+    } else if ((start == end + 1 || start == end - 1) && size == data.length){
       System.out.println("resizing");
       resize(0); //problem here -- went to this even when there is space to move back.
       start = 0; //rework this if clause
@@ -142,7 +142,7 @@ public class MyDeque<E>{
       start = 0;
       end = 0;
       size++;
-    }else if (start == end && size == 1){
+    }else if ((start == end && size == 1) || end == start + 1 || end == start - 1){
       end++;
       data[end] = element;
       size++;
@@ -154,7 +154,7 @@ public class MyDeque<E>{
       end++;
       data[end] = element;
       size++;
-    }else if (end == start + 1 || end == start - 1){ //resize
+    }else if ((end == start + 1 || end == start - 1) && size == data.length){ //resize
       int toAdd = data.length;
       System.out.println("resizing");
       resize(toAdd);
