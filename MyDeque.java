@@ -8,20 +8,15 @@ public class MyDeque<E>{
   @SuppressWarnings("unchecked")
   public static void main(String[] args){
     MyDeque<Integer> test = new MyDeque();
-    System.out.println("Current myDeque: " + test);
-    test.addFirst(2);
-    System.out.println("Current myDeque: " + test);
-    System.out.println("The array: " + Arrays.toString(test.data));
-    test.addFirst(3);
-    System.out.println("Current myDeque: " + test);
-    System.out.println("The array: " + Arrays.toString(test.data));
-    test.addFirst(4);
-    System.out.println("Current myDeque: " + test);
-    System.out.println("The array: " + Arrays.toString(test.data));
-    test.addLast(5);
-    System.out.println("Current myDeque: " + test);
-    System.out.println("The array: " + Arrays.toString(test.data));
-
+    for (int i = 0; i<10; i++){
+      if (i%2 == 0){
+        test.addFirst(i);
+      }else{
+        test.addLast(i);
+      }
+      System.out.println("Current myDeque: " + test);
+      System.out.println("The array: " + Arrays.toString(test.data));
+    }
   }
   public MyDeque(){
     data = (E[])new Object[10];
@@ -71,7 +66,7 @@ public class MyDeque<E>{
       start = 0;
       end = 0;
       size++;
-    } else if (start == end && size == 1){
+    } else if ((start == end && size == 1) || start == end + 1 || start == end - 1){
       start = data.length - 1;
       data[start] = element;
       size++;
@@ -83,9 +78,10 @@ public class MyDeque<E>{
       start--;
       data[start] = element;
       size++;
-    } else if (start == end + 1 || start == end - 1){
-      resize(0);
-      start = 0;
+    } else if (start == end + 1 || start == end - 1 && size == data.length){
+      System.out.println("resizing");
+      resize(0); //problem here -- went to this even when there is space to move back.
+      start = 0; //rework this if clause
       end = size;
       size++;
     }
@@ -111,32 +107,33 @@ public class MyDeque<E>{
     data = toAssign;
   }
   private void resize(int keepEmpty){ //should modify data to be resized but still contain space for thing to be added
-    int k = 0;
+    int k = 0; //this is the index of the data
     E[] toAssign = (E[])new Object[(data.length * 2 + 1)];
     if (start > end){
-      for (int i = start; i<(data.length - 1); i++){
+      for (int i = start; i<(data.length - 1); i++){ //this is the index in the new data
         if (i != keepEmpty){
-          toAssign[k] = data[i];
+          toAssign[i] = data[k];
+          k++;
         }
-        k++;
       }
       for (int j = 0; j <= end; j++){
         if (j != keepEmpty){
-          toAssign[k] = data[j];
+          toAssign[j] = data[k];
+          k++;
         }
-        k++;
       }
     }else{ //start where ti should be
       for (int l = start; l <= end; l++){
         if (l != keepEmpty){
-          toAssign[k] = data[l];
+          toAssign[l] = data[k];
+          k++;
         }
-        k++;
       }
     }
     data = toAssign;
   }
   public void addLast(E element){
+    System.out.println("Adding Last " + element);
     if (element == null){
       throw new NullPointerException("no null vals");
     }
@@ -159,6 +156,7 @@ public class MyDeque<E>{
       size++;
     }else if (end == start + 1 || end == start - 1){ //resize
       int toAdd = data.length;
+      System.out.println("resizing");
       resize(toAdd);
       end = toAdd; //toAdd should == size actually
       size++;
