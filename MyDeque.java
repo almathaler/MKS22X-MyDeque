@@ -19,6 +19,15 @@ public class MyDeque<E>{
       System.out.println("Current myDeque: " + test);
       System.out.println("The array: " + Arrays.toString(test.data));
     }
+    for (int i = 0; i<27; i++){
+      if (i%3 == 0){
+        System.out.println("removin first: " + test.removeFirst());
+      }else{
+        System.out.println("removin last: " +test.removeLast());
+      }
+      System.out.println("Current myDeque: " + test);
+      System.out.println("The array: " + Arrays.toString(test.data));
+    }
   }
   public MyDeque(){
     data = (E[])new Object[10];
