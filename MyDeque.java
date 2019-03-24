@@ -10,8 +10,8 @@ public class MyDeque<E>{
   @SuppressWarnings("unchecked")
   public static void main(String[] args){
     MyDeque<Integer> test = new MyDeque();
-    for (int i = 0; i<15; i++){
-      if (i%2 == 0){
+    for (int i = 0; i<27; i++){
+      if (i%3 == 0){
         test.addFirst(i);
       }else{
         test.addLast(i);
@@ -126,7 +126,7 @@ public class MyDeque<E>{
       start = 0;
       end = 0;
       size++;
-    }else if ((start == end && size == 1) || end == start + 1 || end == start - 1){
+    }else if (start == end && size == 1){
       System.out.println("in second block");
       end++;
       data[end] = element;
