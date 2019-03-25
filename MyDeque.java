@@ -121,7 +121,8 @@ public class MyDeque<E>{
     if (element == null){
       throw new NullPointerException("no null vals");
     }
-    if (size == 0 && start == -1 && end == -1){
+    //&& start == -1 && end == -1
+    if (size == 0){
     //System.out.println("in first block");
       data[0] = element;
       start = 0;
@@ -161,9 +162,11 @@ public class MyDeque<E>{
       //toReturn = data[start];
       data[start] = null;
       start++;
+      size--;
     }else if (start == data.length-1){ //return start back to 0
       data[start] = null;
       start = 0;
+      size--;
     }
     return toReturn;
   }
@@ -176,9 +179,11 @@ public class MyDeque<E>{
     if (end > 0){
       data[end] = null;
       end--;
+      size--;
     }else if (end == 0){
       data[end] = null;
       end = (data.length-1);
+      size--;
     }
     return toReturn;
   }
