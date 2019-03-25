@@ -64,7 +64,7 @@ public class MyDeque<E>{
     if (element == null){
       throw new NullPointerException("no null values allowed");
     }
-    if (size == 0 && start == -1 && end == -1){
+    if (size == 0){
       //System.out.println("in first block");
       data[0] = element;
       start = 0;
@@ -189,13 +189,13 @@ public class MyDeque<E>{
   }
   public E getFirst(){
     if (size == 0){
-      throw new NoSuchElementException("deque empty!");
+      throw new NoSuchElementException("[get] deque empty!");
     }
     return data[start];
   }
   public E getLast(){
     if (size == 0){
-      throw new NoSuchElementException("deque empty!");
+      throw new NoSuchElementException("[get] deque empty!");
     }
     return data[end];
   }
