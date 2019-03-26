@@ -14,10 +14,12 @@ public class Calculator{
       for (String st : postfix){
         queue.addLast(st);
       }
-      System.out.println("the queue: " + queue.toString());
+      //System.out.println("the queue: " + queue.toString());
       int size = queue.size();
+      //int size = postfix.length;
       MyDeque<Double> stack = new MyDeque<Double>(size); //for the numbers
       boolean working = true;
+      //int i = 0
       while (working){
         //System.out.println("getFirst: " + queue.getFirst());
         String addS = queue.removeFirst();
